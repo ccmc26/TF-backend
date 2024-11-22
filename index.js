@@ -1,26 +1,13 @@
-// require('dotenv').config({ path: './backend/.env' });
 const express = require('express');
-const path = require('path'); 
-
-if (process.env.NODE_ENV !== 'production') { 
-    // Ruta para entorno de desarrollo local 
-    console.log('vaaaaaaaa');
-    require('dotenv').config({ path: './backend/.env' });
-} else { 
-    console.log('ufffffffff');
-    // Para producción, las variables de entorno deberían estar configuradas en Railway 
-    require('dotenv').config();
-}
-
 const mongoose = require('mongoose');
 const cors = require('cors');
 
 const setupRoutes = require('./routes/routes.js');
+require('dotenv').config();
 
 let app = express();
 const PORT = process.env.PORT || 8080;
 const mongoURI = process.env.MONGO_URI;
-// const mongoURI = "mongodb+srv://carconmar:carconmar26%40@projectefinal.cogmp.mongodb.net/projecteFINAL?retryWrites=true&w=majority";
 
 mongoose.connect(mongoURI)
 .then(() =>{
