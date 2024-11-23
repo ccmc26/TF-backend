@@ -69,7 +69,7 @@ exports.postProductos = async(req, res) => {
 
         // xicoteta comprobació abans d'aguardar la info
         if (!name || !price || !desc || _idTipo) { 
-            res.status(400).send('Falten campss requerits' + name + price + desc + _idTipo); 
+            res.status(400).send('Falten campss requerits'); 
             return; 
         }
 
