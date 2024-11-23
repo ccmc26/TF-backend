@@ -18,7 +18,11 @@ mongoose.connect(mongoURI)
 
 // middleware per a que la app puga analitzar el body d'una sol·licitud
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin:["http://localhost:8080", "https://tf-backend-production.up.railway.app"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials:true
+}));
 setupRoutes(app);
 
 app.listen(PORT, () => {
