@@ -12,6 +12,18 @@ exports.getProductos = async(req, res) => {
     }
 }
 
+// llistar tots els productes per Tipus
+exports.getProductosTipos = async(req, res) => {
+    try{
+        let productos = await Producto
+                                    .find()
+                                    .sort({ _idTipo: "asc"});
+        res.json(productos);
+    }catch(error){
+        res.send("ERROR: " + error);
+    }   
+}
+
 // listar por idTipo
 exports.getProductosByTipo = async(req, res) => {
     try{
