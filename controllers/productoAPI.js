@@ -68,8 +68,8 @@ exports.postProductos = async(req, res) => {
         const { name, desc, _idTipo, price } = req.body;
 
         // xicoteta comprobació abans d'aguardar la info
-        if (!name || !price || !desc) { 
-            res.status(400).send('Falten campss requerits'); 
+        if (!name || !price || !desc || _idTipo) { 
+            res.status(400).send('Falten campss requerits' + name + price + desc + _idTipo); 
             return; 
         }
 
