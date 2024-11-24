@@ -4,6 +4,7 @@ const tipoProductoController = require('../../controllers/tipoProductoAPI.js');
 let router = express.Router();
 
 router.get('/', tipoProductoController.getTiposProduct);
+router.get('/asc', tipoProductoController.getTipoProduct);
 router.get('/:_id', tipoProductoController.getTipoProduct);
 
 router.post('/', tipoProductoController.posTiposProduct);

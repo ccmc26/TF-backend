@@ -10,6 +10,18 @@ exports.getTiposProduct = async(req, res) => {
     }
 }
 
+// tots els tipos ordenats asc
+exports.getTiposProductASC = async(req, res) => {
+    try{
+        let tipos = await tipoProducto
+                                    .find()
+                                    .sort({name: "asc"});
+        res.json(tipos);
+    }catch(error){
+        res.send("ERROR: "+ error)
+    }
+}
+
 exports.getTipoProduct = async(req, res) => {
     try{
         const id = req.params._id;
