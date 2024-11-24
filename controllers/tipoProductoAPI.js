@@ -15,7 +15,7 @@ exports.getTiposProductASC = async(req, res) => {
     try{
         let tipos = await tipoProducto
                                     .find()
-                                    .sort({name: "asc"});
+                                    .sort({name: 1});
         res.json(tipos);
     }catch(error){
         res.send("ERROR: "+ error)
