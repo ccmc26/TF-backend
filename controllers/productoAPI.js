@@ -12,9 +12,10 @@ exports.getProductos = async(req, res) => {
     }
 }
 
-// llistar tots els productes per Tipus i els ordena asc pel nom
+// llistar tots els productes ordena asc pel nom
 exports.getProductosTipos = async(req, res) => {
     try{
+        const { _idTipo } = req.params;
         let productos = await Producto
                                     .find()
                                     .sort({ name: 1});
@@ -29,8 +30,8 @@ exports.getProductosByTipo = async(req, res) => {
     try{
         const _idTipo = req.params._idTipo;
         let productos = await Producto
-                                .find({_idTipo: _idTipo});
-                                // .populate('tipoProductoInfo');
+                                .find({_idTipo: _idTipo})
+                                .sort({ name: 1});
         res.json(productos);
     }catch(error){
         res.send("ERROR " + error);
