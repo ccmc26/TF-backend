@@ -48,7 +48,13 @@ exports.getUsersByEmail = async (req, res) => {
 // crea un user
 exports.postUser = async(req, res) => {
     try{
-        const { username, email, password, name, surnames} = req.body;
+        const { username, email, password, name, surnames, role} = req.body;
+
+        // verificar si el user ja esta en ús
+        let existingUser = await User.findOne({ email: email }); 
+        if (existingUser) { 
+            return res.status(400).json({ message: "El correo electrónico ya está registrado" }); 
+        };
 
         const newUser = await User.create({
             username,
@@ -56,9 +62,13 @@ exports.postUser = async(req, res) => {
             password,
             name,
             surnames,
+            role: role || 'user'
         });
 
-    res.json(newUser);
+    // Generar un token para el nuevo usuario 
+    const token = jwt.sign({ id: newUser._id, email: newUser.email, role: newUser.role }, secretKey, { expiresIn: '1h' }); 
+    res.status(201).json({ message: "Registro exitoso", token });
+    
     }catch(error){
         res.send("ERROR " + error);
     }
