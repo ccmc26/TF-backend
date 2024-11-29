@@ -1,4 +1,6 @@
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
+const secretKey = process.env.SECRET_KEY;
 // EL  CRUD
 
 //tots els users
@@ -74,10 +76,14 @@ exports.postLoginUser = async(req, res) => {
         if(!user) return res.status(401).json({message: "Correu o contrasenya incorrectes"});
         // si si que existeix comprovem si es un Match
         const isMatch = await user.comparePassword(password);
+        if(!isMatch) return res.status(401).json({message: "Correu o contrasenya incorrectes"});
         // si es un match s'indica
         // no es un match es mostra el mateix missatge que en el del email
-        if(isMatch) return res.status(200).json({message: "Inici de sessió correcte "});
-        else return res.status(401).json({message: "Correu o contrasenya incorrectes"});
+        const token = jwt.sign({id: user._id, email: user.email}, secretKey, {expiresIn: '1h'});
+        return res.status(200).json({message: "Inici de sessió valid", user: {
+                                                                                useremail: user.email,
+                                                                                userid: user._id,
+                                                                                token: token}})
     }catch(error){
         res.send("ERROR: " + error);
     }
