@@ -70,7 +70,7 @@ exports.postUser = async(req, res) => {
     res.status(201).json({ message: "Registro exitoso", token });
     
     }catch(error){
-        res.send("ERROR " + error);
+        res.status(500).json("ERROR " + error);
     }
 }
 
