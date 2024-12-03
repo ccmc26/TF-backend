@@ -112,27 +112,57 @@ exports.postProductos = async(req, res) => {
 }
 
 // actualitzar un producto
-exports.updateProductos = async(req, res) => {
-    try{
-        const updateProducto = await Producto.findByIdAndUpdate({_id: req.params._id }, req.body, {new: true});
-        
-        const updateTipoProductoProducto = await TipoProductoProducto.findOneAndUpdate( {
-             productoId: req.params._id 
-            }, { 
-                nombreProducto: updateProducto.name, 
-                descProducto: updateProducto.desc, 
-                precioProducto: updateProducto.price, // Asegúrate de actualizar el nombre del tipo de producto si es necesario 
-            },{new: true, upsert: true, setDefaultsOnInsert: true});
-            // retorna els dos
-            res.json({ 
-                message: 'Producto y transición actualizados con éxito', 
-                producto: updateProducto, 
-                tipoProductoProducto: updateTipoProductoProducto 
-            });   
-    }catch(error){
-        res.send("ERROR: " + error);
+exports.updateProductos = async (req, res) => {
+    try {
+        const { _id } = req.params; // ID del producto a actualizar
+        const updates = req.body;  // Campos que se quieren actualizar
+
+        // Buscar el producto actual antes de actualizar
+        const currentProducto = await Producto.findById(_id);
+        if (!currentProducto) {
+            return res.status(404).json({ message: 'Producto no encontrado' });
+        }
+
+        // Actualizar el producto con los datos enviados
+        const updatedProducto = await Producto.findByIdAndUpdate(
+            _id,
+            updates,
+            { new: true } // Retorna el producto actualizado
+        );
+
+        // Buscar el tipo de producto asociado al producto actualizado
+        const tipoProducto = await TipoProducto.findById(updatedProducto._idTipo);
+        if (!tipoProducto) {
+            return res.status(404).json({ message: 'Tipo de producto asociado no encontrado' });
+        }
+
+        // Actualizar la tabla de transición con los datos más recientes
+        const updatedTipoProductoProducto = await TipoProductoProducto.findOneAndUpdate(
+            { productoId: _id }, // Identificar la relación por el ID del producto
+            {
+                productoId: updatedProducto._id,
+                tipoProductoId: tipoProducto._id,
+                nombreProducto: updatedProducto.name,
+                descProducto: updatedProducto.desc,
+                precioProducto: updatedProducto.price,
+                nombreTipo: tipoProducto.name
+            },
+            { new: true, upsert: true, setDefaultsOnInsert: true } // Crear si no existe
+        );
+
+        // Responder con el producto actualizado y su relación
+        res.json({
+            message: 'Producto y tabla de transición actualizados con éxito',
+            producto: updatedProducto,
+            tipoProductoProducto: updatedTipoProductoProducto
+        });
+    } catch (error) {
+        console.error('Error al actualizar producto:', error);
+        res.status(500).send("ERROR: " + error.message);
     }
-}
+};
+
+
 
 // eliminar un producto
 exports.deleteProductos = async(req, res) => {

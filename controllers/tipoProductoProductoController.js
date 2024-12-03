@@ -3,7 +3,7 @@ const TipoProductoProducto = require('../models/productotipoProducto');
 // Obtener todos los productos con sus tipos
 exports.getAllProductosConTipos = async (req, res) => {
     try {
-        const productosConTipos = await TipoProductoProducto.find().sort({ nombreProducto: 1 });
+        const productosConTipos = await TipoProductoProducto.find().sort({ nombreTipo: 1 });
         res.json(productosConTipos);
     } catch (error) {
         res.status(500).send("ERROR " + error);
