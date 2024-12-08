@@ -11,7 +11,7 @@ const authorizeAdmin = require('../middleware/authorizeAdmin.js');
 const setupRoutes = (app) => {
     // Aquí configuras todas las rutas necesarias
     app.use('/api/users', usersAPIroutes);
-    app.use('/api/tipos', authenticateToken, authorizeAdmin, tipoProductoAPIroutes);
+    app.use('/api/tipos', tipoProductoAPIroutes);
     app.use('/api/productos', productAPIroutes);
     app.use('/api/pedidos', authenticateToken, pedidoAPIroutes);
     app.use('/api/ptp', ptpAPIroutes);

@@ -93,6 +93,7 @@ exports.postLoginUser = async(req, res) => {
         return res.status(200).json({message: "Inici de sessió valid", user: {
                                                                                 useremail: user.email,
                                                                                 userid: user._id,
+                                                                                role: user.role,
                                                                                 token: token}})
     }catch(error){
         res.send("ERROR: " + error);
