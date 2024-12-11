@@ -68,6 +68,7 @@ userSchema.pre('save', async function(next){
 // metodo que compara les contrasenyes en text pla
 userSchema.methods.comparePassword = async function(candidatePassword){
     try {
+        console.log(this.password, candidatePassword);
         return await bcrypt.compare(candidatePassword, this.password);
     } catch (error) {
         throw new Error('Error al comparar la contraseña: ' + error.message);

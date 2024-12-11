@@ -1,5 +1,6 @@
 const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const secretKey = process.env.SECRET_KEY;
 // EL  CRUD
 
@@ -83,7 +84,7 @@ exports.postLoginUser = async(req, res) => {
         // busquem si existeix algun usuari amb eixe email
         let user = await User.findOne({ email: email});
         // si no existeix indiquem que no ho fa
-        if(!user) return res.status(401).json({message: "Correu o contrasenya incorrectes"});
+        if(!user) return res.status(401).json({message: "No usertribat"});
         // si si que existeix comprovem si es un Match
         const isMatch = await user.comparePassword(password);
         if(!isMatch) return res.status(401).json({message: "Correu o contrasenya incorrectes"});
@@ -101,18 +102,33 @@ exports.postLoginUser = async(req, res) => {
 }
 
 // actualitza de forma parcial un user
+// encara per revisar
 exports.updateUser = async(req, res) => {
-    try{
-        const usernameUser = req.params.username;
-        let existeUser = await User.findOne({username: usernameUser});
-        if(existeUser){
-            let updatedUser = await User.updateOne({username: usernameUser}, req.body);
-            res.json(await User.find({username: usernameUser}));
-        }else{
-            res.send("No existeix cap usuari a actualitzar");
+    console.log(req.body);
+    try {
+        const useremail = req.params.email;
+        let existeUser = await User.findOne({ email: useremail });
+
+        if (existeUser) {
+            // Si se está actualizando la contraseña, la hasheamos
+            if (req.body.password) {
+                const salt = await bcrypt.genSalt(10);  // Generamos el salt
+                req.body.password = await bcrypt.hash(req.body.password, salt);  // Hasheamos la nueva contraseña
+            }
+
+            // Actualizamos los campos del usuario
+            // Usamos Object.assign() para combinar los valores originales con los nuevos
+            Object.assign(existeUser, req.body);
+
+            // Guardamos los cambios
+            const updatedUser = await existeUser.save();  // Aquí se ejecutará el middleware pre('save')
+
+            res.json(updatedUser);  // Enviamos el usuario actualizado
+        } else {
+            res.status(404).send("No existe el usuario para actualizar");
         }
-    }catch(error){
-        res.send("ERROR " + error);
+    } catch (error) {
+        res.status(500).send("ERROR: " + error);
     }
 }
 

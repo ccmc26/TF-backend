@@ -13,7 +13,7 @@ router.get('/email/:email', authenticateToken, authorizeAdmin, userAPIController
 router.post('/', userAPIController.postUser);
 router.post('/login', userAPIController.postLoginUser);
 
-router.patch('/:username', authenticateToken, userAPIController.updateUser);
+router.put('/:email', userAPIController.updateUser);
 
 router.delete('/:username', authenticateToken, userAPIController.deleteUser);
 
