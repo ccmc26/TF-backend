@@ -104,7 +104,7 @@ exports.postLoginUser = async(req, res) => {
 // actualitza de forma parcial un user
 // encara per revisar
 exports.updateUser = async(req, res) => {
-    console.log(req.body);
+    // console.log(req.body);
     try {
         const useremail = req.params.email;
         let existeUser = await User.findOne({ email: useremail });
@@ -119,6 +119,9 @@ exports.updateUser = async(req, res) => {
             // Actualizamos los campos del usuario
             // Usamos Object.assign() para combinar los valores originales con los nuevos
             Object.assign(existeUser, req.body);
+
+            // Deshabilitamos el middleware pre('save') para evitar un doble hash
+            existeUser.isModified = (field) => field !== 'password';
 
             // Guardamos los cambios
             const updatedUser = await existeUser.save();  // Aquí se ejecutará el middleware pre('save')
